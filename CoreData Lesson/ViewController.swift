@@ -14,47 +14,53 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context = appDelegate.persistentContainer.viewContext
+        //savingDate(context: context)
+        gettingData(context: context)
     }
     
     func gettingData(context: NSManagedObjectContext) {
-        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "User")
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Product")
+        
         do {
-            let users = try context.fetch(request)
+            let products =  try context.fetch(request)
             
-            if users.count > 0 {
-                for user in users as! [NSManagedObject]{
-                    if let userName = user.value(forKey: "name") {
-                        print(userName)
+            if products.count > 0 {
+                for product in products as! [NSManagedObject] {
+                    if let description = product.value(forKey: "prod_description") {
+                        print(description)
+                    }
+                    if let price = product.value(forKey: "prod_price") {
+                        print(price)
+                    }
+                    if let color = product.value(forKey: "prod_color") {
+                        print(color)
                     }
                 }
             } else {
-                print("Sem usuário bicho")
+                print("Sem produtos cadastrados")
             }
-            
         } catch {
-            print("Faiô bicho")
+            print("Faiô")
         }
     }
-
-    func savingData(context: NSManagedObjectContext) {
+    
+    func savingDate(context: NSManagedObjectContext) {
+        
         // Criando entidade
-        let user = NSEntityDescription.insertNewObject(forEntityName: "User", into: context)
-        
-        // Configurando o objeto
-        user.setValue("Bastião", forKey: "name")
-        user.setValue(41, forKey: "age")
-        user.setValue("boibrabo", forKey: "username")
-        user.setValue("1234", forKey: "password")
+        let product = NSEntityDescription.insertNewObject(forEntityName: "Product", into: context)
         
         
-        // Pesistir os dados
+        // Configurando objeto
+        product.setValue("Cellphone", forKey: "prod_description")
+        product.setValue(1199.99, forKey: "prod_price")
+        product.setValue("pale blue sky", forKey: "prod_color")
         
         do {
             try context.save()
-            print ("Salvô")
         } catch {
-            print("Faiô bicho")
+            print("Faiô")
         }
     }
+    
 }
 
