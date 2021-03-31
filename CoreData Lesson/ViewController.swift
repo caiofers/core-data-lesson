@@ -15,7 +15,8 @@ class ViewController: UIViewController {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context = appDelegate.persistentContainer.viewContext
         //savingDate(context: context)
-        gettingData(context: context)
+        //gettingData(context: context)
+        editingData(context: context)
     }
     
     func gettingData(context: NSManagedObjectContext) {
@@ -90,5 +91,35 @@ class ViewController: UIViewController {
         }
     }
     
+    func editingData(context: NSManagedObjectContext) {
+        
+        // Criando requisição
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Product")
+        
+        // Filtro
+        let predicate = NSPredicate(format: "prod_description contains [c] %@", "imac")
+        
+        // Aplicando filtro
+        request.predicate = predicate
+        
+        do {
+            let products =  try context.fetch(request)
+            
+            if products.count > 0 {
+                for product in products as! [NSManagedObject] {
+                    product.setValue(12999.99, forKey: "prod_price")
+                    do {
+                        try context.save()
+                    } catch {
+                        print("Faiô")
+                    }
+                }
+            } else {
+                print("Sem produtos cadastrados")
+            }
+        } catch {
+            print("Faiô")
+        }
+    }
 }
 
